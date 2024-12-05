@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokémon vs Darkrai</title>
+    
+    <style>
+          /* スマホ対応 */
+          @media (max-width: 768px) {
+            .container {
+                flex-direction: column; /* 縦並びに変更 */
+            }
+            .vs {
+                margin: 20px 0; /* VS の上下に余白を追加 */
+            }
+            img {
+                width: 100%; /* 画像を画面幅に合わせる */
+                max-width: 300px; /* 最大幅を制限 */
+            }
+        }
+            body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-image: url('images/pokemonbackground.jpg'); /* 画像への相対パス */
+            background-size: cover; /* 画面全体を覆う */
+            background-position: center; /* 中央に配置 */
+            background-repeat: no-repeat; /* 繰り返さない */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            background-image: url('images/ball.jpg');
+            width: 120px; /* ボタンの幅 */
+            height: 120px; /* ボタンの高さ（幅と同じにする） */
+            background-position: center;
+            border-radius: 100%;
+            background-size: 250px 250px;
+        }
+        .vs {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ff0000;
+        }
+        .container {
+            display: flex;
+            justify-content: center; /* 横方向中央揃え */
+            align-items: center; /* 縦方向中央揃え */
+            gap: 20px; /* 画像間の間隔 */
+            margin-top: 40px;
+        }
+        .pokemon-card {
+            text-align: center; /* 画像と名前の中央揃え */
+        }
+        img {
+            width: 300px;
+            height: auto;
+        }
+        .get{
+            position: absolute; 
+            top: 300px; /* 縦方向の中央揃え */
+            left: 50%; /* 横方向の中央揃え */
+            transform: translate(-50%, -50%); /* 中央基準に調整 */
+            font-size: 16px; /* テキストのサイズ */
+            font-weight: bold; /* テキストを太字に */
+            pointer-events: none; /* テキストがクリックを妨げない */
+            margin: 0; /* 不要な余白を消す */
+            padding: 0; /* 不要な余白を消す */
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Something VS ダークライ</h1>
+
+    <button onclick="fetchRandomPokemon()">
+        <span class="get">ゲットだぜする</span>
+    </button>
+    
+  
+     <!-- 画像表示用の横並びコンテナ -->
+     <div class="container">
+        <div id="result"class="pokemon-card">
+          
+        </div>
+        <div class="vs">VS</div>
+        <div id="darkrai" class="pokemon-card">
+        
+        </div>
+    </div>
+    <script>
+
+    //  get pokemon API and show up
+         function getPokemon(url,elementId){
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch Pokémon');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const name = data.name;
+                    const imageUrl = data.sprites.front_default;
+                    document.getElementById(elementId).innerHTML = `
+                        <h2>${name.charAt(0).toUpperCase() + name.slice(1)}</h2>
+                        <img src="${imageUrl}" alt="${name}">
+                    `;
+                })
+                .catch(error => {
+                    document.getElementById(elementId).innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                });
+        }
+    
+    // get darkrai
+
+        function fetchdarkrai(){
+            const darkraiUrl =  "https://pokeapi.co/api/v2/pokemon/darkrai";
+            getPokemon(darkraiUrl,'darkrai')
+        }
+        fetchdarkrai();
+
+
+    // get randome pokemon
+        function fetchRandomPokemon(){
+            // Generate a random Pokémon ID between 1 and 1010 (the current total number of Pokémon)
+            // floor 小数切り捨て　(random()*(max-min+1)+min)=その範囲の数字でランダムに生成
+            const randomId = Math.floor(Math.random() * 1010) + 1;
+            const randomUrl = `https://pokeapi.co/api/v2/pokemon/${randomId}`;
+
+            getPokemon(randomUrl,'result');
+        }
+
+    </script>
+</body>
+</html>
